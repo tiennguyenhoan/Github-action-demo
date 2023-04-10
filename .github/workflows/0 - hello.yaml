@@ -1,0 +1,17 @@
+name: Hello-World-Actions
+
+on:
+  push:
+    branches: master
+  workflow_dispatch:
+
+jobs:
+  Greet:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Say Hello
+        run: echo Hello World!
+      - name: Say Goodbye
+        run: |
+          echo Job Finished.
+          echo Goodbye!
