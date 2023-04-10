@@ -1,0 +1,31 @@
+name: 2 - Event trigger Workflow - Manual
+
+# Events that control when the action will run.
+on:
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+    inputs:
+      name:
+        # Friendly description to be shown in the UI instead of 'name'
+        description: 'Person to greet'
+        # Default value if no value is explicitly provided
+        default: 'Devops'
+        # Input has to be provided for the workflow to run
+        required: true
+        # Can be boolean, choice, environment, string
+        type: string
+
+jobs:
+  greeting:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Send greeting
+        run: |
+          echo "Hello ${{ github.event.inputs.name }}" 
+
+      - name: Say Goodbye
+        run: |
+          echo Job Finished.
+          echo Goodbye!

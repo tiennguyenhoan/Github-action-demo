@@ -1,0 +1,24 @@
+name: 8 - Step variable link
+
+on:
+  workflow_dispatch:
+
+jobs:
+  link-step:
+    name: Run Sample workflow
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Sample build image
+        id: build # Must declare step id for future usage
+        run: |
+          echo "docker build ..."
+          echo "docker push ..."
+          echo "image=sample-image:1" >> $GITHUB_OUTPUT
+
+      - name: Sample deploy
+        env:
+          IMAGE_NAME: ${{ steps.build.outputs.image }}
+        run: |
+          echo $IMAGE_NAME

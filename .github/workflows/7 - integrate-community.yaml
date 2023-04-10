@@ -1,0 +1,25 @@
+name: 7 - Integrate community action script to our workflow
+
+# Events that control when the action will run.
+on:
+  workflow_dispatch:
+
+jobs:
+
+  check-python:
+    name: Check python job
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Check python install
+        run:  python -V
+
+      - name: Set up python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+
+      - name: Check python install
+        run:  python -V

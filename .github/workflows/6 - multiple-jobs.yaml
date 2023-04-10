@@ -1,0 +1,27 @@
+name: 6 - Multiple Job Actions
+
+on:
+  workflow_dispatch:
+
+jobs:
+
+  Job-A:
+    name: Execute A job
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Execute Job A"
+
+  Job-B: 
+    name: Execute B job
+    runs-on: ubuntu-20.04
+    steps:
+      - run: echo "Execute Job B"
+      - run : echo "This job should run at the same time with job A"
+
+  Job-C: 
+    name: Execute C job
+    needs: Job-B
+    runs-on: ubuntu-18.04
+    steps:
+      - run: echo "Execute Job C"
+      - run : echo "This job should run last and separate with other"

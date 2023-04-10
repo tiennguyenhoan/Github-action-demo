@@ -1,0 +1,44 @@
+name: 9 - Status execution workflow
+
+# Events that control when the action will run.
+on:
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+    inputs:
+      status:
+        type: choice
+        description: Fail or Pass
+        options: 
+        - Fail
+        - Pass
+
+jobs:
+  status-execute:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Define status
+        run: >
+          if [ ${{ github.event.inputs.status }} == "Fail" ]; then
+            exit 1;
+          else
+            exit 0;
+          fi
+
+      - name: Run on fail
+        if: failure()
+        run: echo "Fail"
+
+      - name: Run on success
+        if: success()
+        run: echo "Success"
+
+      - name: Always execute
+        if: always()
+        run: echo "This will run no matter the status is"
+
+
+
+
+

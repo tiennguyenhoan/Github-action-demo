@@ -1,0 +1,31 @@
+name: 1 - Basic workflow
+
+# Events that control when the action will run.
+on:
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# List job 
+jobs:
+
+  # A job
+  greeting:
+
+    # Job name display only
+    name: Greeting job
+
+    # Define runner to run on
+    # This case we use default from Github
+    # If we use self-hosted runner then change to `runs-on: self-hosted``
+    runs-on: ubuntu-latest
+
+    # List step of a job
+    steps:
+      # All step will execute from top to bottom
+      - name: Say Hello
+        run: echo Hello World!
+
+      - name: Say Goodbye
+        run: |
+          echo Job Finished.
+          echo Goodbye!

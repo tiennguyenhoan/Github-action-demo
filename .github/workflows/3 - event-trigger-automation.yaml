@@ -1,0 +1,41 @@
+name: 3 - Event Trigger workflow - Automation
+
+# Events that control when the action will run.
+on:
+  # Push code to branch master
+  push:
+    branches:
+      - master
+      - test
+      - feature/**
+      - "!release/**"
+
+  # Schedule to execute 
+  # Will run in every hour
+  # schedule:
+  #   - cron: '0 */1 * * *'
+
+  # When having a pull request to master
+  pull_request:
+    branches:
+      - master
+    types:
+      - opened
+      - reopened
+      - synchronize
+      - closed
+
+  # When publish a release 
+  release:
+    types:
+      - published
+
+jobs:
+  greeting:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Send greeting
+        run: |
+          echo "Hello there" 

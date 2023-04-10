@@ -1,0 +1,52 @@
+name: 5 - Workflow with condition
+
+# Events that control when the action will run.
+on:
+    # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+    inputs:
+      is_execute:
+        # Friendly description to be shown in the UI instead of 'name'
+        description: 'Execute the job'
+        # Input has to be provided for the workflow to run
+        required: true
+        # Can be boolean, choice, environment, string
+        type: boolean
+      status:
+        type: choice
+        description: 'Status to close or open'
+        options:
+        - none
+        - close
+        - open
+        # Input has to be provided for the workflow to run
+        required: true
+
+jobs:
+
+  pull-request:
+    name: Run workflow on pull request event
+
+    runs-on: ubuntu-latest
+
+    # Job condition, if not meet then this will skip entire job
+    if: ${{ github.event.inputs.is_execute && github.event.inputs.is_execute != 'false' }}
+
+    steps:
+      - name: Run on trigger
+        run: echo "Greeting"
+
+      - name: Execute on create  
+        # Step condition, we can define step can be run or not based on condition
+        if: github.event.inputs.status == 'open'
+        run: |
+          echo "Execute command on create..."
+          date
+
+      - name: Execute on Close
+        # Step condition, we can define step can be run or not based on condition
+        if: github.event.inputs.status == 'close'
+        run: |
+          echo "Execute command on close..."
+          date
+          echo "bye....."

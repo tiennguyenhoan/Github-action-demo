@@ -1,0 +1,104 @@
+name: Advanced workflow on use
+
+# Events that control when the action will run.
+on:
+  # Workflow will trigger when we have new event on pull request
+  pull_request:
+    branches:
+      - master
+    types:
+      - opened
+      - reopened
+      - synchronize
+      - closed
+
+jobs:
+
+  pull-request:
+    name: Run workflow on pull request event
+    runs-on: ubuntu-latest
+
+    # Job condition, if not meet then this will skip entire job
+    if: startswith(github.head_ref, 'feature/')
+
+    env:
+      PR_NUMBER: ${{ github.event.pull_request.number }}
+      PR_ACTION: ${{ github.event.action }}
+
+    steps:
+      - uses: voxmedia/github-action-slack-notify-build@v1
+        id: slack
+        with:
+          channel: sample-notifications
+          status: STARTED
+          color: warning
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - uses: dorny/paths-filter@v2
+        id: filter
+        with:
+          filters: |
+            workflows:
+              - 'src/**'
+
+      - name: Sample build and push docker image
+        id: build
+        if: env.PR_ACTION != 'closed' && steps.filter.outputs.workflows == 'true'
+        run: |
+          IMAGE="Sample-image:$PR_NUMBER"
+          echo "docker build $IMAGE"
+          echo "docker push $IMAGE"
+          echo "image=$IMAGE" >> $GITHUB_OUTPUT
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Sample deploy
+        if: env.PR_ACTION != 'closed'
+        env:
+          IMAGE_NAME: ${{ steps.build.outputs.image }}
+        run: |
+          echo $IMAGE_NAME
+          echo "Deploying........"
+
+      - name: Notify PR
+        if: env.PR_ACTION != 'closed'
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          message: |
+            Your PR has been build success
+
+      - name: Sample cleanup
+        if: env.PR_ACTION == 'closed'
+        run: |
+          echo "Cleaning up........"
+
+      # Pre-configured step to send notification on build success
+      - name: Notify slack success
+        if: success()
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+        uses: voxmedia/github-action-slack-notify-build@v1
+        with:
+          message_id: ${{ steps.slack.outputs.message_id }}
+          channel: sample-notifications
+          status: SUCCESS
+          color: good
+
+      # Pre-configured step to send notification on build failure
+      - name: Notify slack fail
+        if: failure()
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+        uses: voxmedia/github-action-slack-notify-build@v1
+        with:
+          message_id: ${{ steps.slack.outputs.message_id }}
+          channel: sample-notifications
+          status: FAILED
+          color: danger
