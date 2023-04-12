@@ -12,8 +12,8 @@ on:
 
   # Schedule to execute 
   # Will run in every hour
-  # schedule:
-  #   - cron: '0 */1 * * *'
+  schedule:
+    - cron: '0 */1 * * *'
 
   # When having a pull request to master
   pull_request:
