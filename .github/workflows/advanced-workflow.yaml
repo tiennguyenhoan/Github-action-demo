@@ -32,6 +32,7 @@ jobs:
           channel: sample-notifications
           status: STARTED
           color: warning
+        continue-on-error: true
         env:
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
 
@@ -85,6 +86,7 @@ jobs:
         env:
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
         uses: voxmedia/github-action-slack-notify-build@v1
+        continue-on-error: true
         with:
           message_id: ${{ steps.slack.outputs.message_id }}
           channel: sample-notifications
@@ -97,6 +99,7 @@ jobs:
         env:
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
         uses: voxmedia/github-action-slack-notify-build@v1
+        continue-on-error: true
         with:
           message_id: ${{ steps.slack.outputs.message_id }}
           channel: sample-notifications
